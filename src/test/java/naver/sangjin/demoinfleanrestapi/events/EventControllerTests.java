@@ -3,8 +3,10 @@ package naver.sangjin.demoinfleanrestapi.events;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -27,9 +29,12 @@ public class EventControllerTests {
     @Autowired
     ObjectMapper objectMapper;
 
+    @MockBean
+    EventRepository eventRepository;
+
     // 입력값들을 전달하면 JSON 응답으로 201이 나오는지 확인
     // ** Location 헤더에 생성된 이벤트를 조회할 수 있는 URI 담겨 있는지 확인.
-
+    // ** id는 DB에 들어갈 때 자동생성된 값으로 나오는지 확인
     @Test
     public void createEvent() throws Exception {
         Event event = Event.builder()
@@ -44,6 +49,9 @@ public class EventControllerTests {
                 .limitOfEnrollment(100)
                 .location("신갈동")
                 .build();
+
+        event.setId(10);
+        Mockito.when(eventRepository.save(event)).thenReturn(event);
 
 
         mockMvc.perform(post("/api/events/")

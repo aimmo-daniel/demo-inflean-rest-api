@@ -2,16 +2,13 @@ package naver.sangjin.demoinfleanrestapi.events;
 
 import lombok.*;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Builder @AllArgsConstructor @NoArgsConstructor
-@Getter @Setter @EqualsAndHashCode(of = "id")
-@Entity
-public class Event {
+// 입력값을 제한하기 위해 event 클래스와 분리
+// id 또는 입력 데이터로 계산해야 하는 값들은 입력을 받지 않아야 한다.
+@Data @Builder @NoArgsConstructor @AllArgsConstructor
+public class EventDto {
 
-    @Id @GeneratedValue
-    private Integer id;
     private String name;
     private String description;
     private LocalDateTime beginEnrollmentDateTime;
@@ -22,9 +19,5 @@ public class Event {
     private int basePrice; // (optional)
     private int maxPrice; // (optional)
     private int limitOfEnrollment;
-    private boolean offline;
-    private boolean free;
-    @Enumerated(EnumType.STRING)
-    private EventStatus eventStatus = EventStatus.DRAFT;
 
 }

@@ -1,9 +1,13 @@
 package naver.sangjin.demoinfleanrestapi.events;
 
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@RunWith(JUnitParamsRunner.class)
 public class EventTest {
 
     @Test
@@ -32,66 +36,52 @@ public class EventTest {
     }
 
     @Test
-    public void tesfFree(){
+    @Parameters(method = "parametersForTestFree")
+    public void testFree(int basePrice, int maxPrice, boolean isFree){
         // Given
         Event event = Event.builder()
-                .basePrice(0)
-                .maxPrice(0)
+                .basePrice(basePrice)
+                .maxPrice(maxPrice)
                 .build();
 
         // When
         event.update();
 
         // Then
-        assertThat(event.isFree()).isTrue();
+        assertThat(event.isFree()).isEqualTo(isFree);
+    }
 
-        // Given
-        event = Event.builder()
-                .basePrice(100)
-                .maxPrice(0)
-                .build();
-
-        // When
-        event.update();
-
-        // Then
-        assertThat(event.isFree()).isFalse();
-
-        // Given
-        event = Event.builder()
-                .basePrice(0)
-                .maxPrice(100)
-                .build();
-
-        // When
-        event.update();
-
-        // Then
-        assertThat(event.isFree()).isFalse();
+    // parametersFor + 테스트할 메소드 이름 으로 하면 @Parameters(method = "") 생략 가능
+    private Object[] parametersForTestFree() {
+        return new Object[] {
+                new Object[] {0, 0, true},
+                new Object[] {100, 0, false},
+                new Object[] {0, 100, false},
+                new Object[] {100, 200, false}
+        };
     }
 
     @Test
-    public void testOffline() {
+    @Parameters
+    public void testOffline(String location, boolean isOffline) {
         // Given
         Event event = Event.builder()
-                .location("신갈역 6번출구")
+                .location(location)
                 .build();
 
         // When
         event.update();
 
         // Then
-        assertThat(event.isOffline()).isTrue();
-
-        // Given
-        event = Event.builder()
-                .build();
-
-        // When
-        event.update();
-
-        // Then
-        assertThat(event.isOffline()).isFalse();
+        assertThat(event.isOffline()).isEqualTo(isOffline);
     }
 
+    // parametersFor + 테스트할 메소드 이름 으로 하면 @Parameters(method = "") 생략 가능
+    private Object[] parametersForTestOffline() {
+        return new Object[] {
+                new Object[] {"기흥역 6번출구", true},
+                new Object[] {null, false},
+                new Object[] {"      ", false}
+        };
+    }
 }

@@ -56,10 +56,10 @@ public class EventControllerTests {
         EventDto event = EventDto.builder()
                 .name("Spring")
                 .description("REST API Development with Spring")
-                .beginEnrollmentDateTime(LocalDateTime.of(2019, 01, 31, 10,02))
-                .closeEnrollmentDateTime(LocalDateTime.of(2019,02,01,8,30))
-                .beginEventDateTime(LocalDateTime.of(2019,02,02,10,20))
-                .endEventDateTime(LocalDateTime.of(2019,02,03,04,20))
+                .beginEnrollmentDateTime(LocalDateTime.of(2019, 01, 31, 10, 02))
+                .closeEnrollmentDateTime(LocalDateTime.of(2019, 02, 01, 8, 30))
+                .beginEventDateTime(LocalDateTime.of(2019, 02, 02, 10, 20))
+                .endEventDateTime(LocalDateTime.of(2019, 02, 03, 04, 20))
                 .basePrice(100)
                 .maxPrice(200)
                 .limitOfEnrollment(100)
@@ -67,9 +67,9 @@ public class EventControllerTests {
                 .build();
 
         mockMvc.perform(post("/api/events/")
-                    .contentType(MediaType.APPLICATION_JSON_UTF8)
-                    .accept(MediaTypes.HAL_JSON)
-                    .content(objectMapper.writeValueAsString(event)))
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaTypes.HAL_JSON)
+                .content(objectMapper.writeValueAsString(event)))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").exists())
@@ -141,10 +141,10 @@ public class EventControllerTests {
                 .id(100)
                 .name("Spring")
                 .description("REST API Development with Spring")
-                .beginEnrollmentDateTime(LocalDateTime.of(2019, 01, 31, 10,02))
-                .closeEnrollmentDateTime(LocalDateTime.of(2019,02,01,8,30))
-                .beginEventDateTime(LocalDateTime.of(2019,02,02,10,20))
-                .endEventDateTime(LocalDateTime.of(2019,02,03,04,20))
+                .beginEnrollmentDateTime(LocalDateTime.of(2019, 01, 31, 10, 02))
+                .closeEnrollmentDateTime(LocalDateTime.of(2019, 02, 01, 8, 30))
+                .beginEventDateTime(LocalDateTime.of(2019, 02, 02, 10, 20))
+                .endEventDateTime(LocalDateTime.of(2019, 02, 03, 04, 20))
                 .basePrice(100)
                 .maxPrice(200)
                 .limitOfEnrollment(100)
@@ -169,8 +169,8 @@ public class EventControllerTests {
         EventDto eventDto = EventDto.builder().build();
 
         this.mockMvc.perform(post("/api/events")
-                    .contentType(MediaType.APPLICATION_JSON_UTF8)
-                    .content(this.objectMapper.writeValueAsString(eventDto)))
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(this.objectMapper.writeValueAsString(eventDto)))
                 .andExpect(status().isBadRequest());
     }
 
@@ -180,10 +180,10 @@ public class EventControllerTests {
         EventDto eventDto = EventDto.builder()
                 .name("Spring")
                 .description("REST API Development with Spring")
-                .beginEnrollmentDateTime(LocalDateTime.of(2019, 11, 26, 10,02))
-                .closeEnrollmentDateTime(LocalDateTime.of(2019,11,25,8,30))
-                .beginEventDateTime(LocalDateTime.of(2019,11,24,10,20))
-                .endEventDateTime(LocalDateTime.of(2019,11,23,04,20))
+                .beginEnrollmentDateTime(LocalDateTime.of(2019, 11, 26, 10, 02))
+                .closeEnrollmentDateTime(LocalDateTime.of(2019, 11, 25, 8, 30))
+                .beginEventDateTime(LocalDateTime.of(2019, 11, 24, 10, 20))
+                .endEventDateTime(LocalDateTime.of(2019, 11, 23, 04, 20))
                 .basePrice(10000)
                 .maxPrice(200)
                 .limitOfEnrollment(100)
@@ -211,10 +211,10 @@ public class EventControllerTests {
 
         // When
         this.mockMvc.perform(get("/api/events")
-                    .param("page", "1")
-                    .param("size", "10")
-                    .param("sort", "name,DESC")
-                )
+                .param("page", "1")
+                .param("size", "10")
+                .param("sort", "name,DESC")
+        )
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("page").exists())
@@ -225,13 +225,37 @@ public class EventControllerTests {
         ;
     }
 
-    private void generateEvent(int i){
+    @Test
+    @TestDescription("기존의 이벤트 하나 조회하기")
+    public void getEvent() throws Exception {
+        // Given
+        Event event = this.generateEvent(100);
+
+        // When & Then
+        this.mockMvc.perform(get("/api/events/{id}", event.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("name").exists())
+                .andExpect(jsonPath("id").exists())
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.profile").exists())
+                .andDo(document("get-an-event"));
+    }
+
+    @Test
+    @TestDescription("없는 이벤트를 조회했을 때 404 응답받기")
+    public void getEvent404() throws Exception {
+        // When & Then
+        this.mockMvc.perform(get("/api/events/12343"))
+                .andExpect(status().isNotFound());
+    }
+
+    private Event generateEvent(int i) {
         Event event = Event.builder()
                 .name("event " + i)
                 .description("test event")
                 .build();
 
-        this.eventRepository.save(event);
+        return this.eventRepository.save(event);
     }
 
 

@@ -3,7 +3,6 @@ package naver.sangjin.demoinfleanrestapi.events;
 import naver.sangjin.demoinfleanrestapi.common.BaseControllerTest;
 import naver.sangjin.demoinfleanrestapi.common.TestDescription;
 import org.junit.Test;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;

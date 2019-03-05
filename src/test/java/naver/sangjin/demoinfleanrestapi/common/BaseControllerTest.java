@@ -1,7 +1,6 @@
 package naver.sangjin.demoinfleanrestapi.common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import naver.sangjin.demoinfleanrestapi.events.EventRepository;
 import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.modelmapper.ModelMapper;

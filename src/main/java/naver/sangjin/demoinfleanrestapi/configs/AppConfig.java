@@ -27,7 +27,7 @@ public class AppConfig {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
-    @Bean
+/*    @Bean
     public ApplicationRunner applicationRunner() {
         return new ApplicationRunner() {
 
@@ -44,5 +44,5 @@ public class AppConfig {
                 accountService.saveAccount(sangjin);
             }
         };
-    }
+    }*/
 }

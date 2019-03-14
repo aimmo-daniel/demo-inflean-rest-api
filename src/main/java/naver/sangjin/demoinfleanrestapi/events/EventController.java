@@ -44,6 +44,7 @@ public class EventController {
 /*        Event event = Event.builder()
                 .name(eventDto.getName())
                 .description(eventDto.getDescription()) ...;*/
+        System.out.println(eventDto.toString());
 
         if(errors.hasErrors()) {
             return badRequest(errors);

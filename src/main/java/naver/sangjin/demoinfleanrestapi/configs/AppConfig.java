@@ -1,8 +1,10 @@
 package naver.sangjin.demoinfleanrestapi.configs;
 
 import naver.sangjin.demoinfleanrestapi.accounts.Account;
+import naver.sangjin.demoinfleanrestapi.accounts.AccountRepository;
 import naver.sangjin.demoinfleanrestapi.accounts.AccountService;
 import naver.sangjin.demoinfleanrestapi.accounts.AccounteRole;
+import naver.sangjin.demoinfleanrestapi.common.AppProperties;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -27,22 +29,32 @@ public class AppConfig {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
-/*    @Bean
+    @Bean
     public ApplicationRunner applicationRunner() {
         return new ApplicationRunner() {
 
             @Autowired
             AccountService accountService;
 
+            @Autowired
+            AppProperties appProperties;
+
             @Override
             public void run(ApplicationArguments args) throws Exception {
-                Account sangjin = Account.builder()
-                        .email("sangjin@email.com")
-                        .password("sangjin")
+                Account admin = Account.builder()
+                        .email(appProperties.getAdminUsername())
+                        .password(appProperties.getAdminPassword())
                         .roles(Set.of(AccounteRole.ADMIN, AccounteRole.USER))
                         .build();
-                accountService.saveAccount(sangjin);
+                accountService.saveAccount(admin);
+
+                Account user = Account.builder()
+                        .email(appProperties.getUserUsername())
+                        .password(appProperties.getUserPassword())
+                        .roles(Set.of(AccounteRole.ADMIN, AccounteRole.USER))
+                        .build();
+                accountService.saveAccount(user);
             }
         };
-    }*/
+    }
 }

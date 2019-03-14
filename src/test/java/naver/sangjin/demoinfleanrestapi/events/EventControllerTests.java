@@ -4,6 +4,7 @@ import naver.sangjin.demoinfleanrestapi.accounts.Account;
 import naver.sangjin.demoinfleanrestapi.accounts.AccountRepository;
 import naver.sangjin.demoinfleanrestapi.accounts.AccountService;
 import naver.sangjin.demoinfleanrestapi.accounts.AccounteRole;
+import naver.sangjin.demoinfleanrestapi.common.AppProperties;
 import naver.sangjin.demoinfleanrestapi.common.BaseControllerTest;
 import naver.sangjin.demoinfleanrestapi.common.TestDescription;
 import org.junit.Before;
@@ -39,6 +40,9 @@ public class EventControllerTests extends BaseControllerTest {
 
     @Autowired
     AccountRepository accountRepository;
+
+    @Autowired
+    AppProperties appProperties;
 
     @Before
     public void setUp() {
@@ -108,7 +112,7 @@ public class EventControllerTests extends BaseControllerTest {
                         // relaxed 접두어
                         // 장점 : 문서 일부분만 테스트 할 수 있다. , 단점 : 정확한 문서를 생성하지 못한다.
                         //relaxedResponseFields
-                        responseFields(
+                        relaxedResponseFields(
                                 fieldWithPath("id").description("identifier of new event"),
                                 fieldWithPath("name").description("Name of new event"),
                                 fieldWithPath("description").description("description of new event"),
@@ -133,23 +137,17 @@ public class EventControllerTests extends BaseControllerTest {
     }
 
     private String getBearerToken() throws Exception {
-            //Given
-        String username = "sangjin@email.com";
-        String password = "sangjin";
         Account sangjin = Account.builder()
-                .email(username)
-                .password(password)
+                .email(appProperties.getUserUsername())
+                .password(appProperties.getUserPassword())
                 .roles(Set.of(AccounteRole.ADMIN, AccounteRole.USER))
                 .build();
         this.accountService.saveAccount(sangjin);
 
-        String clientId = "myApp";
-        String clientSecret = "pass";
-
         ResultActions perform = this.mockMvc.perform(post("/oauth/token")
-            .with(httpBasic(clientId, clientSecret))
-                .param("username", username)
-                .param("password", password)
+            .with(httpBasic(appProperties.getClientId(), appProperties.getClientSecret()))
+                .param("username", appProperties.getUserUsername())
+                .param("password", appProperties.getUserPassword())
                 .param("grant_type", "password"));
 
         var responseBody = perform.andReturn().getResponse().getContentAsString();
